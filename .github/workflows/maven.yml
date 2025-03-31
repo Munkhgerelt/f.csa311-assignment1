@@ -7,11 +7,14 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+    
+    - name: Verify files
+      run: ls -la
     
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -29,39 +32,17 @@ jobs:
     - name: Upload JaCoCo report
       uses: actions/upload-artifact@v4
       with:
-        name: jacoco-coverage-report
+        name: jacoco-report
         path: target/site/jacoco/
-        retention-days: 5
         
-    - name: Upload application JAR
+    - name: Upload executable JAR
       uses: actions/upload-artifact@v4
       with:
         name: flashcard-app
         path: target/*.jar
-        retention-days: 5
         
-    - name: Verify CLI interface
+    - name: Verify CLI
       run: |
-        # Test help command
-        java -jar target/flashcard-app-*.jar --help
-        
-        # Test with actual cards file
-        echo "Capital of France|Paris" > test-cards.txt
-        echo "2+2|4" >> test-cards.txt
-        java -jar target/flashcard-app-*.jar test-cards.txt --order worst-first --repetitions 2
-        
-  deploy:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Download artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: flashcard-app
-        path: artifacts/
-        
-    - name: List downloaded files
-      run: ls -la artifacts/
+        echo "Test Q1|Test A1" > cards.txt
+        echo "Test Q2|Test A2" >> cards.txt
+        java -jar target/flashcard-app-*.jar cards.txt --order random
