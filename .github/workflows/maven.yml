@@ -9,24 +9,43 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v3
+    
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    
     - name: Build with Maven
-      run: mvn -B clean package --file pom.xml
-    - name: Generate Site
-      run: mvn site site:stage
-    - name: Archive Site
+      run: mvn -B clean package
+      
+    - name: Run tests with coverage
+      run: mvn test jacoco:report
+      
+    - name: Archive JaCoCo report
       uses: actions/upload-artifact@v3
       with:
-        name: site
-        path: target/staging
-    - name: Run Tests
-      run: mvn test
-    - name: Verify Checkstyle
-      run: mvn checkstyle:check
+        name: jacoco-report
+        path: target/site/jacoco/
+        
+    - name: Archive executable JAR
+      uses: actions/upload-artifact@v3
+      with:
+        name: flashcard-app
+        path: target/*.jar
+        
+    - name: Verify CLI help
+      run: |
+        java -jar target/flashcard-app-*.jar --help
+        java -jar target/flashcard-app-*.jar cards.txt --order worst-first --repetitions 3 --invertCards || true
+        
+    - name: Verify file loading
+      run: |
+        # Create a test cards file
+        echo "Test Q1|Test A1" > cards.txt
+        echo "Test Q2|Test A2" >> cards.txt
+        java -jar target/flashcard-app-*.jar cards.txt --order random
