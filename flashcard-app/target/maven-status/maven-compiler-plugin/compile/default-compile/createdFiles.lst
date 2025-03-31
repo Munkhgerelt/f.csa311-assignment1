@@ -1,0 +1,11 @@
+com\flashcard\model\FlashCard.class
+com\flashcard\model\RandomOrganizer.class
+com\flashcard\controller\FlashCardController.class
+com\flashcard\service\AchievementTracker.class
+com\flashcard\Main.class
+com\flashcard\config\Config.class
+com\flashcard\model\CardOrganizer.class
+com\flashcard\service\CardLoader.class
+com\flashcard\model\RecentMistakesFirstSorter.class
+com\flashcard\model\WorstFirstOrganizer.class
+com\flashcard\service\OrganizerFactory.class

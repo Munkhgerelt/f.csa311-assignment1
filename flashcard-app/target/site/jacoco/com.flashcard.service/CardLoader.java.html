@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CardLoader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Flashcard Application</a> &gt; <a href="index.source.html" class="el_package">com.flashcard.service</a> &gt; <span class="el_source">CardLoader.java</span></div><h1>CardLoader.java</h1><pre class="source lang-java linenums">package com.flashcard.service;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.flashcard.model.FlashCard;
+
+<span class="fc" id="L16">public class CardLoader {</span>
+    public List&lt;FlashCard&gt; loadCards(String filename) throws IOException {
+<span class="fc" id="L18">        Path path = Paths.get(filename);</span>
+        
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">        if (!Files.exists(path)) {</span>
+<span class="nc" id="L21">            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filename);</span>
+<span class="nc bnc" id="L22" title="All 2 branches missed.">            if (inputStream == null) {</span>
+<span class="nc" id="L23">                throw new FileNotFoundException(&quot;Cannot find card file: &quot; + filename);</span>
+            }
+<span class="nc" id="L25">            return readCardsFromStream(inputStream);</span>
+        }
+        
+<span class="fc" id="L28">        return Files.readAllLines(path).stream()</span>
+<span class="pc bpc" id="L29" title="2 of 4 branches missed.">            .filter(line -&gt; !line.trim().isEmpty() &amp;&amp; !line.startsWith(&quot;#&quot;))</span>
+<span class="fc" id="L30">            .map(line -&gt; line.split(&quot;\\|&quot;, 2))</span>
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">            .filter(parts -&gt; parts.length == 2)</span>
+<span class="fc" id="L32">            .map(parts -&gt; new FlashCard(parts[0].trim(), parts[1].trim()))</span>
+<span class="fc" id="L33">            .collect(Collectors.toList());</span>
+    }
+
+    private List&lt;FlashCard&gt; readCardsFromStream(InputStream is) throws IOException {
+<span class="nc" id="L37">        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {</span>
+<span class="nc" id="L38">            return reader.lines()</span>
+<span class="nc bnc" id="L39" title="All 4 branches missed.">                .filter(line -&gt; !line.trim().isEmpty() &amp;&amp; !line.startsWith(&quot;#&quot;))</span>
+<span class="nc" id="L40">                .map(line -&gt; line.split(&quot;\\|&quot;, 2))</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">                .filter(parts -&gt; parts.length == 2)</span>
+<span class="nc" id="L42">                .map(parts -&gt; new FlashCard(parts[0].trim(), parts[1].trim()))</span>
+<span class="nc" id="L43">                .collect(Collectors.toList());</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

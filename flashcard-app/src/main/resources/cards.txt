@@ -1,0 +1,3 @@
+Capital of France|Paris
+Largest planet|Jupiter
+2+2|4
