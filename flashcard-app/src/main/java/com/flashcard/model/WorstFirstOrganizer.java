@@ -8,7 +8,7 @@ public class WorstFirstOrganizer implements CardOrganizer {
     @Override
     public List<FlashCard> organize(List<FlashCard> cards) {
         return cards.stream()
-                .sorted(Comparator.comparingDouble(this::getIncorrectRatio).reversed())
+                .sorted(Comparator.comparingDouble(this::getIncorrectRatio))
                 .collect(Collectors.toList());
     }
     
