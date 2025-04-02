@@ -54,7 +54,10 @@ public class FlashCardController {
             System.out.println("3. Show statistics");
             System.out.println("4. Show achievements");
             System.out.println("5. Show options help");
-            System.out.println("6. Exit");
+            System.out.println("6. Change orders");
+            System.out.println("7. Choose repetitions");
+            System.out.println("8. Invert");
+            System.out.println("9. Exit");
             System.out.print("Enter your choice: ");
 
             if (!scanner.hasNextLine()) {
@@ -69,7 +72,10 @@ public class FlashCardController {
                 case "3" -> showStats();
                 case "4" -> achievementTracker.printAchievements();
                 case "5" -> Config.showHelp();
-                case "6" -> running = false;
+                case "6" -> changeOrder();
+                case "7" -> changeRepetition();
+                case "8" -> invertCards();
+                case "9" -> running = false;
                 default -> System.out.println("Invalid choice. Please enter 1-6.");
             }
         }
@@ -97,7 +103,7 @@ public class FlashCardController {
 
                 if (nonInteractiveMode) {
                     System.out.println("Simulated answer: " + card.getAnswer(config.isInvertCards()));
-                    card.markCorrect();  // Assume correct answers in CI mode
+                    card.markCorrect();
                 } else {
                     System.out.print("Your answer: ");
                     String answer = scanner.nextLine();
@@ -142,4 +148,46 @@ public class FlashCardController {
         System.out.println("Repetitions: " + config.getRepetitions());
         System.out.println("Inverted cards: " + config.isInvertCards());
     }
+
+    private void changeOrder() {
+        System.out.println("\nSelect the card order:");
+        System.out.println("1. Random");
+        System.out.println("2. Worst First");
+        System.out.println("3. Recent Mistakes First");
+        System.out.print("Enter your choice: ");
+    
+        if (!scanner.hasNextLine()) {
+            System.out.println("\nNo input detected. Returning to main menu...");
+            return;
+        }
+    
+        String choice = scanner.nextLine();
+        switch (choice) {
+            case "1" -> config.setOrder("random");
+            case "2" -> config.setOrder("worst-first");
+            case "3" -> config.setOrder("recent-mistakes-first");
+            default -> {
+                System.out.println("Invalid choice. Keeping current order.");
+                return;
+            }
+        }
+    
+        System.out.println("Card order updated to: " + config.getOrder());
+    }
+
+    private void changeRepetition() {
+        System.out.print("Enter new repetition count (1-10): ");
+        String input = scanner.nextLine();
+    
+        try {
+            int newRepetitions = Integer.parseInt(input);
+            config.changeRepetition(newRepetitions);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number between 1 and 10.");
+        }
+    }
+
+    private void invertCards() {
+        config.invert();  // Call the invert method from Config
+    }    
 }

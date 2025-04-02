@@ -9,6 +9,8 @@ public class Config {
     private int repetitions;
     private boolean invertCards;
 
+    private static final List<String> VALID_ORDERS = Arrays.asList("random", "worst-first", "recent-mistakes-first");
+
     public Config(String[] args) throws IllegalArgumentException {
         // Default values
         this.cardsFile = "cards.txt";
@@ -42,15 +44,37 @@ public class Config {
     }
 
     private void validate() {
-        List<String> validOrders = Arrays.asList("random", "worst-first", "recent-mistakes-first");
-        if (!validOrders.contains(order)) {
-            throw new IllegalArgumentException("Invalid order specified. Valid options are: " + validOrders);
+        if (!VALID_ORDERS.contains(order)) {
+            throw new IllegalArgumentException("Invalid order specified. Valid options are: " + VALID_ORDERS);
         }
         if (repetitions < 1 || repetitions > 10) {
             throw new IllegalArgumentException("Repetitions must be between 1 and 10");
         }
     }
 
+    public void setOrder(String newOrder) {
+        if (VALID_ORDERS.contains(newOrder.toLowerCase())) {
+            this.order = newOrder.toLowerCase();
+            System.out.println("Order set to: " + this.order);
+        } else {
+            System.out.println("Invalid order. Keeping the current order: " + this.order);
+        }
+    }
+
+    public void changeRepetition(int newRepetitions) {
+        if (newRepetitions >= 1 && newRepetitions <= 10) {
+            this.repetitions = newRepetitions;
+            System.out.println("Repetition count set to: " + this.repetitions);
+        } else {
+            System.out.println("Invalid repetition count. Please enter a value between 1 and 10.");
+        }
+    }
+    
+    public void invert() {
+        this.invertCards = !this.invertCards;  // Toggle the value (true to false, or false to true)
+        System.out.println("Inversion of cards set to: " + (this.invertCards ? "ON" : "OFF"));
+    }
+    
     public static void showHelp() {
         System.out.println("\nFlashcard Application - Command Line Usage");
         System.out.println("========================================");

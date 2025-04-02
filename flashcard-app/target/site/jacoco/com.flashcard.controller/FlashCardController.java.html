@@ -16,108 +16,179 @@ public class FlashCardController {
     private final Scanner scanner;
     private List&lt;FlashCard&gt; cards;
     private final AchievementTracker achievementTracker;
+    private final boolean nonInteractiveMode;
 
-<span class="nc" id="L20">    public FlashCardController(Config config) {</span>
-<span class="nc" id="L21">        this.config = config;</span>
-<span class="nc" id="L22">        this.scanner = new Scanner(System.in);</span>
-<span class="nc" id="L23">        this.achievementTracker = new AchievementTracker();</span>
-<span class="nc" id="L24">    }</span>
+<span class="nc" id="L21">    public FlashCardController(Config config) {</span>
+<span class="nc" id="L22">        this.config = config;</span>
+<span class="nc" id="L23">        this.scanner = new Scanner(System.in);</span>
+<span class="nc" id="L24">        this.achievementTracker = new AchievementTracker();</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        this.nonInteractiveMode = System.console() == null;  // Detect GitHub Actions</span>
+<span class="nc" id="L26">    }</span>
 
     public void start() {
-<span class="nc" id="L27">        try (scanner) {</span>
-<span class="nc" id="L28">            loadCards();</span>
-<span class="nc" id="L29">            showMainMenu();</span>
-<span class="nc" id="L30">        } catch (IOException e) {</span>
-<span class="nc" id="L31">            System.err.println(&quot;Error loading cards: &quot; + e.getMessage());</span>
-<span class="nc" id="L32">            System.exit(1);</span>
-<span class="nc" id="L33">        }</span>
-<span class="nc" id="L34">    }</span>
+<span class="nc" id="L29">        try (scanner) {</span>
+<span class="nc" id="L30">            loadCards();</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">            if (nonInteractiveMode) {</span>
+<span class="nc" id="L32">                System.out.println(&quot;Running in non-interactive mode...&quot;);</span>
+<span class="nc" id="L33">                autoReviewCards();</span>
+            } else {
+<span class="nc" id="L35">                showMainMenu();</span>
+            }
+<span class="nc" id="L37">        } catch (IOException e) {</span>
+<span class="nc" id="L38">            System.err.println(&quot;Error loading cards: &quot; + e.getMessage());</span>
+<span class="nc" id="L39">            System.exit(1);</span>
+<span class="nc" id="L40">        }</span>
+<span class="nc" id="L41">    }</span>
 
     private void loadCards() throws IOException {
-<span class="nc" id="L37">        CardLoader loader = new CardLoader();</span>
-<span class="nc" id="L38">        this.cards = loader.loadCards(config.getCardsFile());</span>
-<span class="nc" id="L39">    }</span>
+<span class="nc" id="L44">        CardLoader loader = new CardLoader();</span>
+<span class="nc" id="L45">        this.cards = loader.loadCards(config.getCardsFile());</span>
+<span class="nc" id="L46">    }</span>
 
     private void showMainMenu() {
-<span class="nc" id="L42">        boolean running = true;</span>
-<span class="nc bnc" id="L43" title="All 2 branches missed.">        while (running) {</span>
-<span class="nc" id="L44">            System.out.println(&quot;\nMain Menu:&quot;);</span>
-<span class="nc" id="L45">            System.out.println(&quot;1. Review cards&quot;);</span>
-<span class="nc" id="L46">            System.out.println(&quot;2. List all cards&quot;);</span>
-<span class="nc" id="L47">            System.out.println(&quot;3. Show statistics&quot;);</span>
-<span class="nc" id="L48">            System.out.println(&quot;4. Show achievements&quot;);</span>
-<span class="nc" id="L49">            System.out.println(&quot;5. Show options help&quot;);</span>
-<span class="nc" id="L50">            System.out.println(&quot;6. Exit&quot;);</span>
-<span class="nc" id="L51">            System.out.print(&quot;Enter your choice: &quot;);</span>
-            
-<span class="nc" id="L53">            String choice = scanner.nextLine();</span>
-<span class="nc bnc" id="L54" title="All 7 branches missed.">            switch (choice) {</span>
-<span class="nc" id="L55">                case &quot;1&quot; -&gt; reviewCards();</span>
-<span class="nc" id="L56">                case &quot;2&quot; -&gt; listAllCards();</span>
-<span class="nc" id="L57">                case &quot;3&quot; -&gt; showStats();</span>
-<span class="nc" id="L58">                case &quot;4&quot; -&gt; achievementTracker.printAchievements();</span>
-<span class="nc" id="L59">                case &quot;5&quot; -&gt; Config.showHelp();</span>
-<span class="nc" id="L60">                case &quot;6&quot; -&gt; running = false;</span>
-<span class="nc" id="L61">                default -&gt; System.out.println(&quot;Invalid choice. Please enter 1-6.&quot;);</span>
+<span class="nc" id="L49">        boolean running = true;</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        while (running) {</span>
+<span class="nc" id="L51">            System.out.println(&quot;\nMain Menu:&quot;);</span>
+<span class="nc" id="L52">            System.out.println(&quot;1. Review cards&quot;);</span>
+<span class="nc" id="L53">            System.out.println(&quot;2. List all cards&quot;);</span>
+<span class="nc" id="L54">            System.out.println(&quot;3. Show statistics&quot;);</span>
+<span class="nc" id="L55">            System.out.println(&quot;4. Show achievements&quot;);</span>
+<span class="nc" id="L56">            System.out.println(&quot;5. Show options help&quot;);</span>
+<span class="nc" id="L57">            System.out.println(&quot;6. Change orders&quot;);</span>
+<span class="nc" id="L58">            System.out.println(&quot;7. Choose repetitions&quot;);</span>
+<span class="nc" id="L59">            System.out.println(&quot;8. Invert&quot;);</span>
+<span class="nc" id="L60">            System.out.println(&quot;9. Exit&quot;);</span>
+<span class="nc" id="L61">            System.out.print(&quot;Enter your choice: &quot;);</span>
+
+<span class="nc bnc" id="L63" title="All 2 branches missed.">            if (!scanner.hasNextLine()) {</span>
+<span class="nc" id="L64">                System.out.println(&quot;\nNo input detected. Exiting...&quot;);</span>
+<span class="nc" id="L65">                return;</span>
             }
-<span class="nc" id="L63">        }</span>
-<span class="nc" id="L64">    }</span>
+
+<span class="nc" id="L68">            String choice = scanner.nextLine();</span>
+<span class="nc bnc" id="L69" title="All 10 branches missed.">            switch (choice) {</span>
+<span class="nc" id="L70">                case &quot;1&quot; -&gt; reviewCards();</span>
+<span class="nc" id="L71">                case &quot;2&quot; -&gt; listAllCards();</span>
+<span class="nc" id="L72">                case &quot;3&quot; -&gt; showStats();</span>
+<span class="nc" id="L73">                case &quot;4&quot; -&gt; achievementTracker.printAchievements();</span>
+<span class="nc" id="L74">                case &quot;5&quot; -&gt; Config.showHelp();</span>
+<span class="nc" id="L75">                case &quot;6&quot; -&gt; changeOrder();</span>
+<span class="nc" id="L76">                case &quot;7&quot; -&gt; changeRepetition();</span>
+<span class="nc" id="L77">                case &quot;8&quot; -&gt; invertCards();</span>
+<span class="nc" id="L78">                case &quot;9&quot; -&gt; running = false;</span>
+<span class="nc" id="L79">                default -&gt; System.out.println(&quot;Invalid choice. Please enter 1-6.&quot;);</span>
+            }
+<span class="nc" id="L81">        }</span>
+<span class="nc" id="L82">    }</span>
 
     private void reviewCards() {
-<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (cards.isEmpty()) {</span>
-<span class="nc" id="L68">            System.out.println(&quot;No cards available to review.&quot;);</span>
-<span class="nc" id="L69">            return;</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (cards.isEmpty()) {</span>
+<span class="nc" id="L86">            System.out.println(&quot;No cards available to review.&quot;);</span>
+<span class="nc" id="L87">            return;</span>
         }
-        
-<span class="nc" id="L72">        CardOrganizer organizer = OrganizerFactory.createOrganizer(config.getOrder());</span>
-<span class="nc" id="L73">        List&lt;FlashCard&gt; cardsToReview = organizer.organize(cards);</span>
-        
-<span class="nc" id="L75">        System.out.printf(&quot;\nReviewing %d cards (%s order, %d repetitions)\n&quot;,</span>
-<span class="nc" id="L76">                cards.size(), config.getOrder(), config.getRepetitions());</span>
-        
-<span class="nc" id="L78">        long startTime = System.currentTimeMillis();</span>
-        
-<span class="nc bnc" id="L80" title="All 2 branches missed.">        for (int rep = 0; rep &lt; config.getRepetitions(); rep++) {</span>
-<span class="nc" id="L81">            System.out.printf(&quot;\n--- Repetition %d of %d ---\n&quot;, rep + 1, config.getRepetitions());</span>
-            
-<span class="nc bnc" id="L83" title="All 2 branches missed.">            for (FlashCard card : cardsToReview) {</span>
-<span class="nc" id="L84">                System.out.println(&quot;\nQuestion: &quot; + card.getQuestion(config.isInvertCards()));</span>
-<span class="nc" id="L85">                System.out.print(&quot;Your answer: &quot;);</span>
-<span class="nc" id="L86">                String answer = scanner.nextLine();</span>
-                
-<span class="nc bnc" id="L88" title="All 2 branches missed.">                if (answer.equalsIgnoreCase(card.getAnswer(config.isInvertCards()))) {</span>
-<span class="nc" id="L89">                    System.out.println(&quot;Correct!&quot;);</span>
-<span class="nc" id="L90">                    card.markCorrect();</span>
+
+<span class="nc" id="L90">        CardOrganizer organizer = OrganizerFactory.createOrganizer(config.getOrder());</span>
+<span class="nc" id="L91">        List&lt;FlashCard&gt; cardsToReview = organizer.organize(cards);</span>
+
+<span class="nc" id="L93">        System.out.printf(&quot;\nReviewing %d cards (%s order, %d repetitions)\n&quot;,</span>
+<span class="nc" id="L94">                cards.size(), config.getOrder(), config.getRepetitions());</span>
+
+<span class="nc" id="L96">        long startTime = System.currentTimeMillis();</span>
+
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        for (int rep = 0; rep &lt; config.getRepetitions(); rep++) {</span>
+<span class="nc" id="L99">            System.out.printf(&quot;\n--- Repetition %d of %d ---\n&quot;, rep + 1, config.getRepetitions());</span>
+
+<span class="nc bnc" id="L101" title="All 2 branches missed.">            for (FlashCard card : cardsToReview) {</span>
+<span class="nc" id="L102">                System.out.println(&quot;\nQuestion: &quot; + card.getQuestion(config.isInvertCards()));</span>
+
+<span class="nc bnc" id="L104" title="All 2 branches missed.">                if (nonInteractiveMode) {</span>
+<span class="nc" id="L105">                    System.out.println(&quot;Simulated answer: &quot; + card.getAnswer(config.isInvertCards()));</span>
+<span class="nc" id="L106">                    card.markCorrect();</span>
                 } else {
-<span class="nc" id="L92">                    System.out.println(&quot;Incorrect. The correct answer is: &quot; + </span>
-<span class="nc" id="L93">                            card.getAnswer(config.isInvertCards()));</span>
-<span class="nc" id="L94">                    card.markIncorrect();</span>
+<span class="nc" id="L108">                    System.out.print(&quot;Your answer: &quot;);</span>
+<span class="nc" id="L109">                    String answer = scanner.nextLine();</span>
+
+<span class="nc bnc" id="L111" title="All 2 branches missed.">                    if (answer.equalsIgnoreCase(card.getAnswer(config.isInvertCards()))) {</span>
+<span class="nc" id="L112">                        System.out.println(&quot;Correct!&quot;);</span>
+<span class="nc" id="L113">                        card.markCorrect();</span>
+                    } else {
+<span class="nc" id="L115">                        System.out.println(&quot;Incorrect. The correct answer is: &quot; +</span>
+<span class="nc" id="L116">                                card.getAnswer(config.isInvertCards()));</span>
+<span class="nc" id="L117">                        card.markIncorrect();</span>
+                    }
                 }
-<span class="nc" id="L96">            }</span>
+<span class="nc" id="L120">            }</span>
         }
-        
-<span class="nc" id="L99">        long endTime = System.currentTimeMillis();</span>
-<span class="nc" id="L100">        double averageTime = (endTime - startTime) / 1000.0 / (cards.size() * config.getRepetitions());</span>
-        
-<span class="nc" id="L102">        achievementTracker.evaluateRound(cardsToReview, averageTime);</span>
-<span class="nc" id="L103">        achievementTracker.printAchievements();</span>
-        
-<span class="nc" id="L105">        System.out.println(&quot;\nReview session completed!&quot;);</span>
-<span class="nc" id="L106">    }</span>
+
+<span class="nc" id="L123">        long endTime = System.currentTimeMillis();</span>
+<span class="nc" id="L124">        double averageTime = (endTime - startTime) / 1000.0 / (cards.size() * config.getRepetitions());</span>
+
+<span class="nc" id="L126">        achievementTracker.evaluateRound(cardsToReview, averageTime);</span>
+<span class="nc" id="L127">        achievementTracker.printAchievements();</span>
+
+<span class="nc" id="L129">        System.out.println(&quot;\nReview session completed!&quot;);</span>
+<span class="nc" id="L130">    }</span>
+
+    private void autoReviewCards() {
+<span class="nc" id="L133">        System.out.println(&quot;\nAutomatically reviewing all cards...&quot;);</span>
+<span class="nc" id="L134">        reviewCards();</span>
+<span class="nc" id="L135">    }</span>
 
     private void listAllCards() {
-<span class="nc" id="L109">        System.out.println(&quot;\nAll Flash Cards:&quot;);</span>
-<span class="nc bnc" id="L110" title="All 2 branches missed.">        for (int i = 0; i &lt; cards.size(); i++) {</span>
-<span class="nc" id="L111">            System.out.printf(&quot;%d. %s\n&quot;, i + 1, cards.get(i).getQuestion(config.isInvertCards()));</span>
+<span class="nc" id="L138">        System.out.println(&quot;\nAll Flash Cards:&quot;);</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        for (int i = 0; i &lt; cards.size(); i++) {</span>
+<span class="nc" id="L140">            System.out.printf(&quot;%d. %s\n&quot;, i + 1, cards.get(i).getQuestion(config.isInvertCards()));</span>
         }
-<span class="nc" id="L113">    }</span>
+<span class="nc" id="L142">    }</span>
 
     private void showStats() {
-<span class="nc" id="L116">        System.out.println(&quot;\nStatistics:&quot;);</span>
-<span class="nc" id="L117">        System.out.println(&quot;Total cards: &quot; + cards.size());</span>
-<span class="nc" id="L118">        System.out.println(&quot;Configured order: &quot; + config.getOrder());</span>
-<span class="nc" id="L119">        System.out.println(&quot;Repetitions: &quot; + config.getRepetitions());</span>
-<span class="nc" id="L120">        System.out.println(&quot;Inverted cards: &quot; + config.isInvertCards());</span>
-<span class="nc" id="L121">    }</span>
+<span class="nc" id="L145">        System.out.println(&quot;\nStatistics:&quot;);</span>
+<span class="nc" id="L146">        System.out.println(&quot;Total cards: &quot; + cards.size());</span>
+<span class="nc" id="L147">        System.out.println(&quot;Configured order: &quot; + config.getOrder());</span>
+<span class="nc" id="L148">        System.out.println(&quot;Repetitions: &quot; + config.getRepetitions());</span>
+<span class="nc" id="L149">        System.out.println(&quot;Inverted cards: &quot; + config.isInvertCards());</span>
+<span class="nc" id="L150">    }</span>
+
+    private void changeOrder() {
+<span class="nc" id="L153">        System.out.println(&quot;\nSelect the card order:&quot;);</span>
+<span class="nc" id="L154">        System.out.println(&quot;1. Random&quot;);</span>
+<span class="nc" id="L155">        System.out.println(&quot;2. Worst First&quot;);</span>
+<span class="nc" id="L156">        System.out.println(&quot;3. Recent Mistakes First&quot;);</span>
+<span class="nc" id="L157">        System.out.print(&quot;Enter your choice: &quot;);</span>
+    
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        if (!scanner.hasNextLine()) {</span>
+<span class="nc" id="L160">            System.out.println(&quot;\nNo input detected. Returning to main menu...&quot;);</span>
+<span class="nc" id="L161">            return;</span>
+        }
+    
+<span class="nc" id="L164">        String choice = scanner.nextLine();</span>
+<span class="nc bnc" id="L165" title="All 4 branches missed.">        switch (choice) {</span>
+<span class="nc" id="L166">            case &quot;1&quot; -&gt; config.setOrder(&quot;random&quot;);</span>
+<span class="nc" id="L167">            case &quot;2&quot; -&gt; config.setOrder(&quot;worst-first&quot;);</span>
+<span class="nc" id="L168">            case &quot;3&quot; -&gt; config.setOrder(&quot;recent-mistakes-first&quot;);</span>
+            default -&gt; {
+<span class="nc" id="L170">                System.out.println(&quot;Invalid choice. Keeping current order.&quot;);</span>
+<span class="nc" id="L171">                return;</span>
+            }
+        }
+    
+<span class="nc" id="L175">        System.out.println(&quot;Card order updated to: &quot; + config.getOrder());</span>
+<span class="nc" id="L176">    }</span>
+
+    private void changeRepetition() {
+<span class="nc" id="L179">        System.out.print(&quot;Enter new repetition count (1-10): &quot;);</span>
+<span class="nc" id="L180">        String input = scanner.nextLine();</span>
+    
+        try {
+<span class="nc" id="L183">            int newRepetitions = Integer.parseInt(input);</span>
+<span class="nc" id="L184">            config.changeRepetition(newRepetitions);</span>
+<span class="nc" id="L185">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L186">            System.out.println(&quot;Invalid input. Please enter a number between 1 and 10.&quot;);</span>
+<span class="nc" id="L187">        }</span>
+<span class="nc" id="L188">    }</span>
+
+    private void invertCards() {
+<span class="nc" id="L191">        config.invert();  // Call the invert method from Config</span>
+<span class="nc" id="L192">    }    </span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

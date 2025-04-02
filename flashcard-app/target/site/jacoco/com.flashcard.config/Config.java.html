@@ -9,78 +9,102 @@ public class Config {
     private int repetitions;
     private boolean invertCards;
 
-<span class="nc" id="L12">    public Config(String[] args) throws IllegalArgumentException {</span>
-        // Default values
-<span class="nc" id="L14">        this.cardsFile = &quot;cards.txt&quot;;</span>
-<span class="nc" id="L15">        this.order = &quot;random&quot;;</span>
-<span class="nc" id="L16">        this.repetitions = 1;</span>
-<span class="nc" id="L17">        this.invertCards = false;</span>
+<span class="nc" id="L12">    private static final List&lt;String&gt; VALID_ORDERS = Arrays.asList(&quot;random&quot;, &quot;worst-first&quot;, &quot;recent-mistakes-first&quot;);</span>
 
-<span class="nc" id="L19">        parseArguments(args);</span>
-<span class="nc" id="L20">        validate();</span>
-<span class="nc" id="L21">    }</span>
+<span class="nc" id="L14">    public Config(String[] args) throws IllegalArgumentException {</span>
+        // Default values
+<span class="nc" id="L16">        this.cardsFile = &quot;cards.txt&quot;;</span>
+<span class="nc" id="L17">        this.order = &quot;random&quot;;</span>
+<span class="nc" id="L18">        this.repetitions = 1;</span>
+<span class="nc" id="L19">        this.invertCards = false;</span>
+
+<span class="nc" id="L21">        parseArguments(args);</span>
+<span class="nc" id="L22">        validate();</span>
+<span class="nc" id="L23">    }</span>
 
     private void parseArguments(String[] args) {
-<span class="nc bnc" id="L24" title="All 2 branches missed.">        for (int i = 0; i &lt; args.length; i++) {</span>
-<span class="nc bnc" id="L25" title="All 2 branches missed.">            if (args[i].equals(&quot;--help&quot;)) {</span>
-<span class="nc" id="L26">                showHelp();</span>
-<span class="nc" id="L27">                System.exit(0);</span>
-<span class="nc bnc" id="L28" title="All 4 branches missed.">            } else if (args[i].equals(&quot;--order&quot;) &amp;&amp; i + 1 &lt; args.length) {</span>
-<span class="nc" id="L29">                this.order = args[++i];</span>
-<span class="nc bnc" id="L30" title="All 4 branches missed.">            } else if (args[i].equals(&quot;--repetitions&quot;) &amp;&amp; i + 1 &lt; args.length) {</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        for (int i = 0; i &lt; args.length; i++) {</span>
+<span class="nc bnc" id="L27" title="All 2 branches missed.">            if (args[i].equals(&quot;--help&quot;)) {</span>
+<span class="nc" id="L28">                showHelp();</span>
+<span class="nc" id="L29">                System.exit(0);</span>
+<span class="nc bnc" id="L30" title="All 4 branches missed.">            } else if (args[i].equals(&quot;--order&quot;) &amp;&amp; i + 1 &lt; args.length) {</span>
+<span class="nc" id="L31">                this.order = args[++i];</span>
+<span class="nc bnc" id="L32" title="All 4 branches missed.">            } else if (args[i].equals(&quot;--repetitions&quot;) &amp;&amp; i + 1 &lt; args.length) {</span>
                 try {
-<span class="nc" id="L32">                    this.repetitions = Integer.parseInt(args[++i]);</span>
-<span class="nc" id="L33">                } catch (NumberFormatException e) {</span>
-<span class="nc" id="L34">                    throw new IllegalArgumentException(&quot;Invalid number for repetitions&quot;);</span>
-<span class="nc" id="L35">                }</span>
-<span class="nc bnc" id="L36" title="All 2 branches missed.">            } else if (args[i].equals(&quot;--invertCards&quot;)) {</span>
-<span class="nc" id="L37">                this.invertCards = true;</span>
-<span class="nc bnc" id="L38" title="All 2 branches missed.">            } else if (i == 0) {</span>
-<span class="nc" id="L39">                this.cardsFile = args[i];</span>
+<span class="nc" id="L34">                    this.repetitions = Integer.parseInt(args[++i]);</span>
+<span class="nc" id="L35">                } catch (NumberFormatException e) {</span>
+<span class="nc" id="L36">                    throw new IllegalArgumentException(&quot;Invalid number for repetitions&quot;);</span>
+<span class="nc" id="L37">                }</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">            } else if (args[i].equals(&quot;--invertCards&quot;)) {</span>
+<span class="nc" id="L39">                this.invertCards = true;</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">            } else if (i == 0) {</span>
+<span class="nc" id="L41">                this.cardsFile = args[i];</span>
             }
         }
-<span class="nc" id="L42">    }</span>
+<span class="nc" id="L44">    }</span>
 
     private void validate() {
-<span class="nc" id="L45">        List&lt;String&gt; validOrders = Arrays.asList(&quot;random&quot;, &quot;worst-first&quot;, &quot;recent-mistakes-first&quot;);</span>
-<span class="nc bnc" id="L46" title="All 2 branches missed.">        if (!validOrders.contains(order)) {</span>
-<span class="nc" id="L47">            throw new IllegalArgumentException(&quot;Invalid order specified. Valid options are: &quot; + validOrders);</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        if (!VALID_ORDERS.contains(order)) {</span>
+<span class="nc" id="L48">            throw new IllegalArgumentException(&quot;Invalid order specified. Valid options are: &quot; + VALID_ORDERS);</span>
         }
-<span class="nc bnc" id="L49" title="All 4 branches missed.">        if (repetitions &lt; 1 || repetitions &gt; 10) {</span>
-<span class="nc" id="L50">            throw new IllegalArgumentException(&quot;Repetitions must be between 1 and 10&quot;);</span>
+<span class="nc bnc" id="L50" title="All 4 branches missed.">        if (repetitions &lt; 1 || repetitions &gt; 10) {</span>
+<span class="nc" id="L51">            throw new IllegalArgumentException(&quot;Repetitions must be between 1 and 10&quot;);</span>
         }
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L53">    }</span>
 
+    public void setOrder(String newOrder) {
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        if (VALID_ORDERS.contains(newOrder.toLowerCase())) {</span>
+<span class="nc" id="L57">            this.order = newOrder.toLowerCase();</span>
+<span class="nc" id="L58">            System.out.println(&quot;Order set to: &quot; + this.order);</span>
+        } else {
+<span class="nc" id="L60">            System.out.println(&quot;Invalid order. Keeping the current order: &quot; + this.order);</span>
+        }
+<span class="nc" id="L62">    }</span>
+
+    public void changeRepetition(int newRepetitions) {
+<span class="nc bnc" id="L65" title="All 4 branches missed.">        if (newRepetitions &gt;= 1 &amp;&amp; newRepetitions &lt;= 10) {</span>
+<span class="nc" id="L66">            this.repetitions = newRepetitions;</span>
+<span class="nc" id="L67">            System.out.println(&quot;Repetition count set to: &quot; + this.repetitions);</span>
+        } else {
+<span class="nc" id="L69">            System.out.println(&quot;Invalid repetition count. Please enter a value between 1 and 10.&quot;);</span>
+        }
+<span class="nc" id="L71">    }</span>
+    
+    public void invert() {
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        this.invertCards = !this.invertCards;  // Toggle the value (true to false, or false to true)</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        System.out.println(&quot;Inversion of cards set to: &quot; + (this.invertCards ? &quot;ON&quot; : &quot;OFF&quot;));</span>
+<span class="nc" id="L76">    }</span>
+    
     public static void showHelp() {
-<span class="nc" id="L55">        System.out.println(&quot;\nFlashcard Application - Command Line Usage&quot;);</span>
-<span class="nc" id="L56">        System.out.println(&quot;========================================&quot;);</span>
-<span class="nc" id="L57">        System.out.println(&quot;\nBasic Command:&quot;);</span>
-<span class="nc" id="L58">        System.out.println(&quot;  java -jar target\\flashcard-app-1.0-SNAPSHOT.jar &lt;cards-file&gt; [options]&quot;);</span>
+<span class="nc" id="L79">        System.out.println(&quot;\nFlashcard Application - Command Line Usage&quot;);</span>
+<span class="nc" id="L80">        System.out.println(&quot;========================================&quot;);</span>
+<span class="nc" id="L81">        System.out.println(&quot;\nBasic Command:&quot;);</span>
+<span class="nc" id="L82">        System.out.println(&quot;  java -jar target\\flashcard-app-1.0-SNAPSHOT.jar &lt;cards-file&gt; [options]&quot;);</span>
         
-<span class="nc" id="L60">        System.out.println(&quot;\nExample Command:&quot;);</span>
-<span class="nc" id="L61">        System.out.println(&quot;  java -jar target\\flashcard-app-1.0-SNAPSHOT.jar cards.txt --order worst-first --repetitions 3&quot;);</span>
+<span class="nc" id="L84">        System.out.println(&quot;\nExample Command:&quot;);</span>
+<span class="nc" id="L85">        System.out.println(&quot;  java -jar target\\flashcard-app-1.0-SNAPSHOT.jar cards.txt --order worst-first --repetitions 3&quot;);</span>
         
-<span class="nc" id="L63">        System.out.println(&quot;\nRequired:&quot;);</span>
-<span class="nc" id="L64">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;&lt;cards-file&gt;&quot;, &quot;Path to flashcard file (e.g., cards.txt)&quot;);</span>
+<span class="nc" id="L87">        System.out.println(&quot;\nRequired:&quot;);</span>
+<span class="nc" id="L88">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;&lt;cards-file&gt;&quot;, &quot;Path to flashcard file (e.g., cards.txt)&quot;);</span>
         
-<span class="nc" id="L66">        System.out.println(&quot;\nOptions:&quot;);</span>
-<span class="nc" id="L67">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;--help&quot;, &quot;Show this help message&quot;);</span>
-<span class="nc" id="L68">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;--order &lt;order&gt;&quot;, &quot;Card sorting method&quot;);</span>
-<span class="nc" id="L69">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;&quot;, &quot;  random: Shuffle randomly (default)&quot;);</span>
-<span class="nc" id="L70">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;&quot;, &quot;  worst-first: Sort by hardest cards&quot;);</span>
-<span class="nc" id="L71">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;&quot;, &quot;  recent-mistakes-first: Prioritize recent mistakes&quot;);</span>
-<span class="nc" id="L72">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;--repetitions &lt;num&gt;&quot;, &quot;Practice rounds (1-10, default: 1)&quot;);</span>
-<span class="nc" id="L73">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;--invertCards&quot;, &quot;Show answers as questions (default: false)&quot;);</span>
+<span class="nc" id="L90">        System.out.println(&quot;\nOptions:&quot;);</span>
+<span class="nc" id="L91">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;--help&quot;, &quot;Show this help message&quot;);</span>
+<span class="nc" id="L92">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;--order &lt;order&gt;&quot;, &quot;Card sorting method&quot;);</span>
+<span class="nc" id="L93">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;&quot;, &quot;  random: Shuffle randomly (default)&quot;);</span>
+<span class="nc" id="L94">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;&quot;, &quot;  worst-first: Sort by hardest cards&quot;);</span>
+<span class="nc" id="L95">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;&quot;, &quot;  recent-mistakes-first: Prioritize recent mistakes&quot;);</span>
+<span class="nc" id="L96">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;--repetitions &lt;num&gt;&quot;, &quot;Practice rounds (1-10, default: 1)&quot;);</span>
+<span class="nc" id="L97">        System.out.printf(&quot;  %-25s %s%n&quot;, &quot;--invertCards&quot;, &quot;Show answers as questions (default: false)&quot;);</span>
         
-<span class="nc" id="L75">        System.out.println(&quot;\nFile Format:&quot;);</span>
-<span class="nc" id="L76">        System.out.println(&quot;  Question|Answer (one per line)&quot;);</span>
-<span class="nc" id="L77">        System.out.println(&quot;  Example: \&quot;Capital of France|Paris\&quot;&quot;);</span>
-<span class="nc" id="L78">    }</span>
+<span class="nc" id="L99">        System.out.println(&quot;\nFile Format:&quot;);</span>
+<span class="nc" id="L100">        System.out.println(&quot;  Question|Answer (one per line)&quot;);</span>
+<span class="nc" id="L101">        System.out.println(&quot;  Example: \&quot;Capital of France|Paris\&quot;&quot;);</span>
+<span class="nc" id="L102">    }</span>
 
     // Getters
-<span class="nc" id="L81">    public String getCardsFile() { return cardsFile; }</span>
-<span class="nc" id="L82">    public String getOrder() { return order; }</span>
-<span class="nc" id="L83">    public int getRepetitions() { return repetitions; }</span>
-<span class="nc" id="L84">    public boolean isInvertCards() { return invertCards; }</span>
+<span class="nc" id="L105">    public String getCardsFile() { return cardsFile; }</span>
+<span class="nc" id="L106">    public String getOrder() { return order; }</span>
+<span class="nc" id="L107">    public int getRepetitions() { return repetitions; }</span>
+<span class="nc" id="L108">    public boolean isInvertCards() { return invertCards; }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

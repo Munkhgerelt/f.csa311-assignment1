@@ -1,11 +1,11 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 Flashcard Application,com.flashcard,Main,38,0,4,0,13,0,4,0,2,0
-Flashcard Application,com.flashcard.config,Config,301,0,22,0,54,0,19,0,8,0
+Flashcard Application,com.flashcard.config,Config,360,0,32,0,67,0,28,0,12,0
 Flashcard Application,com.flashcard.model,RecentMistakesFirstSorter,42,0,4,0,10,0,4,0,2,0
 Flashcard Application,com.flashcard.model,WorstFirstOrganizer,28,0,2,0,6,0,4,0,3,0
 Flashcard Application,com.flashcard.model,RandomOrganizer,12,0,0,0,4,0,2,0,2,0
 Flashcard Application,com.flashcard.model,FlashCard,45,34,0,4,13,9,8,5,8,3
-Flashcard Application,com.flashcard.controller,FlashCardController,330,0,19,0,74,0,19,0,7,0
+Flashcard Application,com.flashcard.controller,FlashCardController,477,0,36,0,120,0,34,0,11,0
 Flashcard Application,com.flashcard.service,CardLoader,81,63,12,4,11,9,13,6,5,6
 Flashcard Application,com.flashcard.service,AchievementTracker,195,0,12,0,38,0,12,0,6,0
 Flashcard Application,com.flashcard.service,OrganizerFactory,30,0,4,0,6,0,5,0,2,0
