@@ -4,7 +4,7 @@ F.CSA311 хичээлийн бие даалт 1.
 Flashcard Application - Command Line Usage
 ========================================
 
-Usage: flashcard <cards-file> [options]
+Usage: java -jar target\flashcard-app-1.0-SNAPSHOT.jar <cards-file> [options]
 
 Required Arguments:
   <cards-file>          Path to file containing flashcard data (Q&A pairs)
