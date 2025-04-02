@@ -54,7 +54,7 @@ jobs:
         
     - name: Verify CLI
       run: |
-        echo "Capital of France|Paris" > cards.txt
-        echo "Largest planet|Jupiter" >> cards.txt
-        echo "2+2|4" >> cards.txt
-        java -jar flashcard-app/target/flashcard-app-1.0-SNAPSHOT.jar < cards.txt
+        java -jar flashcard-app/target/flashcard-app-1.0-SNAPSHOT.jar <<EOF
+        2   # Select "List all cards"
+        6   # Select "Exit"
+        EOF
