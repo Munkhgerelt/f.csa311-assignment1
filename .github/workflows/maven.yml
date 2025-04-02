@@ -35,14 +35,20 @@ jobs:
         name: jacoco-report
         path: target/site/jacoco/
         
-    - name: Upload executable JAR
+    - name: Upload JAR file
       uses: actions/upload-artifact@v4
       with:
         name: flashcard-app
-        path: target/*.jar
+        path: target/flashcard-app-1.0-SNAPSHOT.jar
+        
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: flashcard-app
+        path: target
         
     - name: Verify CLI
       run: |
         echo "Test Q1|Test A1" > cards.txt
         echo "Test Q2|Test A2" >> cards.txt
-        java -jar target/flashcard-app-*.jar cards.txt --order random
+        java -jar target/flashcard-app-1.0-SNAPSHOT.jar cards.txt
