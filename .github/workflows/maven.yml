@@ -11,10 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Ensure full repo history is fetched
     
     - name: Verify files
-      run: ls -la
+      run: ls -la && ls -la flashcard-app  # Check that pom.xml exists
     
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -25,24 +28,33 @@ jobs:
     
     - name: Build with Maven
       run: mvn -B clean package
+      working-directory: flashcard-app  # Run Maven in correct directory
       
     - name: Run tests with coverage
       run: mvn test jacoco:report
+      working-directory: flashcard-app  # Ensure tests run in correct directory
       
     - name: Upload JaCoCo report
       uses: actions/upload-artifact@v4
       with:
         name: jacoco-report
-        path: target/site/jacoco/
+        path: flashcard-app/target/site/jacoco/
         
-    - name: Upload executable JAR
+    - name: Upload JAR file
       uses: actions/upload-artifact@v4
       with:
         name: flashcard-app
-        path: target/*.jar
+        path: flashcard-app/target/*.jar
+        
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: flashcard-app
+        path: flashcard-app/target
         
     - name: Verify CLI
       run: |
-        echo "Test Q1|Test A1" > cards.txt
-        echo "Test Q2|Test A2" >> cards.txt
-        java -jar target/flashcard-app-*.jar cards.txt --order random
+        java -jar flashcard-app/target/flashcard-app-1.0-SNAPSHOT.jar <<EOF
+        2   # Select "List all cards"
+        6   # Select "Exit"
+        EOF
